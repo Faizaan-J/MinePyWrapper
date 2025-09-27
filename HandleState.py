@@ -3,8 +3,11 @@ from enum import Enum
 
 import Logger
 
-# I used chatgpt for the regex: [HH:MM:SS] [Thread/Level]:
+# I used chatgpt for these regex statements: 
+# "[HH:MM:SS] [Thread/Level]:"
 LOG_PREFIX = re.compile(r"^\[\d{2}:\d{2}:\d{2}\] \[[^\]]+\]: ")
+# "Playername joined the game"
+PLAYER_JOINED_REGEX = r"^[^\s]+ joined the game"
 
 class State(Enum):
     STARTING = "starting"
@@ -28,14 +31,13 @@ def remove_listener(func: callable):
         _listeners.remove(func)
 
 def update_state_from_line(line: str):
-    global state
     msg = strip_prefix(line)
 
     state_table = {
         msg.startswith("Done ("): State.RUNNING,
         msg.startswith("Stopping the server"): State.STOPPING,
         msg.startswith("Server empty for 60 seconds, pausing"): State.IDLE,
-        msg.startswith("<") and "joined the game" in msg: State.RUNNING
+        re.match(PLAYER_JOINED_REGEX, msg): State.RUNNING
     }
 
     new_state = None
