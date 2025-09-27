@@ -42,8 +42,8 @@ server_process = subprocess.Popen(
 def on_state_change(new_state: HandleState.State):
     if new_state == HandleState.State.RUNNING:
         threading.Thread(target=HandleSneakyBans.handle_sneaky_ban, daemon=True).start()
-        HandleState.remove_listener(on_state_change)
-HandleState.add_listener(on_state_change)
+        HandleState.OnStateChange.unsubscribe(on_state_change)
+HandleState.OnStateChange.subscribe(on_state_change)
 
 # how the fuck does this for loop keep running even for all lines that get added after that
 # i think it's because it keeps waiting for more lines to some sort of "output stream"
