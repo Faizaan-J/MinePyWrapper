@@ -1,7 +1,7 @@
 import re
 from enum import Enum
 
-import Logger
+from Events import Event
 
 # I used chatgpt for these regex statements: 
 # "[HH:MM:SS] [Thread/Level]:"
@@ -20,15 +20,8 @@ def strip_prefix(line: str) -> str:
     return LOG_PREFIX.sub("", line, count=1)
 
 state: State = State.STARTING
-_listeners = []
 
-def add_listener(func: callable):
-    _listeners.append(func)
-    invoke_listeners()
-
-def remove_listener(func: callable):
-    if func in _listeners:
-        _listeners.remove(func)
+OnStateChange = Event("OnStateChange")
 
 def update_state_from_line(line: str):
     msg = strip_prefix(line)
@@ -49,15 +42,8 @@ def update_state_from_line(line: str):
 
     set_state(new_state)
 
-def invoke_listeners():
-    for listener in _listeners:
-        try:
-            listener(state)
-        except Exception as e:
-            Logger.Log(Logger.LogLevel.ERROR, f"Listener error: {e}")
-
 def set_state(new_state: State | None):
     global state
     if new_state != state and new_state is not None:
         state = new_state
-        invoke_listeners()
+        OnStateChange.invoke_event(state)

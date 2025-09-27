@@ -16,4 +16,5 @@ def on_state_change(new_state: HandleState.State):
     set_title(state_styles[new_state.value]["title"])
     set_color(state_styles[new_state.value]["color"])
 
-HandleState.add_listener(on_state_change)
+HandleState.OnStateChange.subscribe(on_state_change)
+on_state_change(HandleState.state)
