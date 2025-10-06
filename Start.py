@@ -37,7 +37,9 @@ server_process = subprocess.Popen(
     stdout=subprocess.PIPE,
     stderr=subprocess.STDOUT,
     text=True,
-    bufsize=1
+    bufsize=1,
+    encoding="utf-8",
+    errors="replace"
 )
 
 def on_state_change(new_state: HandleState.State):
