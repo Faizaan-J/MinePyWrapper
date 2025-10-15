@@ -10,6 +10,7 @@ import Logger
 
 from time import sleep as wait                
 
+# will be improved later
 def handle_sneaky_ban():
     sneaky_banned_players = ConfigHandler.config["sneaky_bans"]["players"]
     # ip bans implemented later if needed
@@ -20,7 +21,6 @@ def handle_sneaky_ban():
     try: # when the server closes this errors sometimes cuz its in the middle of running before it can check Handle.state and the server
         # stopped so we just ignore it
         while HandleState.state == HandleState.State.RUNNING:
-            # this is probably shit who knows
             wait(4)
             with Client("127.0.0.1", QUERY_PORT) as query:
                 players = query.stats(True).players

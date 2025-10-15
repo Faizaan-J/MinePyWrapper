@@ -20,5 +20,4 @@ def Log(level: LogLevel, *args):
     timestamp = now.strftime("%H:%M:%S").zfill(8)
     print(f"[{timestamp}] [{prefix}/{level.value}] [{filename}:{line_number}] {' '.join(str(arg) for arg in args)}")
 
-# test
 Log(LogLevel.INFO, "Logger initialized", "Combined message test", 6, 7)
